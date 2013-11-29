@@ -1,0 +1,121 @@
+<!doctype html>
+<html ng-app="app">
+<head>
+</head>
+
+    <meta charset="utf-8">
+    <title>BADco. WDT-NG</title>
+
+    <script src="lib/angular.min.js"></script>
+	<script src="lib/ui-bootstrap-tpls-0.2.0.js"></script>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    
+    <style type="text/css">
+    
+		body {
+			background: black;
+			color: white;
+			overflow: hidden;
+			margin: 50px;
+			font-size: 16px;
+		}
+
+		#video-container {
+			position: absolute;
+			z-index: -1;
+		}
+
+		#canvas-container {
+		}
+      
+    </style>
+
+
+	<script language="javascript">
+		angular.module('app', []);
+
+		var AppCtrl = function($scope) {
+			var canvas = document.getElementById("canvas");
+			var context = canvas.getContext("2d");
+
+			var gstreamer = require("node-gstreamer-superficial");
+
+			var width = 320;
+			var height = 240;
+
+			var pipeline = new gstreamer.Pipeline(
+
+				//"videotestsrc pattern=snow"
+				"filesrc location=/home/dan/archive/video/aida/dance.avi ! decodebin"
+				+" ! videoconvert ! video/x-raw, format=RGBA, width=320, height=240 ! appsink name=sink");
+
+			var appsink = pipeline.findChild("sink");
+
+			var videoContainer = document.getElementById("video-container");
+			var canvasContainer = document.getElementById("canvas-container");
+			window.onresize = function(e) {
+				var ww = window.innerWidth;
+				var wh = window.innerHeight;
+
+				var scale = Math.min( ww/width, wh/height );
+				canvasContainer.style.webkitTransform = "scale("+scale+","+scale+")";
+
+				var ofsx = (ww-width)/2;
+				var ofsy = (wh-height)/2;
+				videoContainer.style.left = ""+(ofsx)+"px";
+				videoContainer.style.top = ""+(ofsy)+"px";
+			}
+
+			document.onkeydown = function(e) {
+				switch( e.keyCode ) {
+					case 38: // up
+						break;
+					case 40: // down
+						break;
+					case 39: // right
+						break;
+					case 37: // left;
+						break;
+					default:
+						console.log("unhandled key code "+e.keyCode );
+				}
+				$scope.$apply();
+			}
+
+			appsink.pull( function(frame) {
+				var image = context.createImageData( width, height );
+				image.data.set( frame );
+
+				context.putImageData( image, 0, 0 );
+
+
+				$scope.$apply();
+
+			}, function(caps) {
+//				console.log("CAPS",caps);
+			} );
+
+			pipeline.play();			
+
+		}
+		AppCtrl.$inject = ["$scope"];
+
+	</script>
+
+<body>
+    <div class="container">
+
+		<div ng-controller="AppCtrl">
+			<div id="video-container">
+				<div id="canvas-container">
+					<canvas id="canvas" width="320" height="240"></canvas>
+				</div>
+			</div>
+			<div>
+			</div>
+		</div>
+
+	</div>      
+</body>
+</html>
+

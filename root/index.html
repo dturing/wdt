@@ -1,0 +1,59 @@
+<!doctype html>
+<html ng-app="app">
+<head>
+</head>
+
+    <meta charset="utf-8">
+    <title>BADco. WDT-NG</title>
+
+    <script src="lib/angular.min.js"></script>
+	<script src="lib/ui-bootstrap-tpls-0.2.0.js"></script>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    
+    <style type="text/css">
+    
+		body {
+			background: black;
+			color: white;
+			overflow: hidden;
+			margin: 50px;
+			font-size: 16px;
+		}
+    </style>
+
+
+	<script language="javascript">
+		angular.module('app', []);
+
+		var AppCtrl = function($scope) {
+
+		}
+		AppCtrl.$inject = ["$scope"];
+
+	</script>
+
+<body>
+    <div class="container">
+
+		<div ng-controller="AppCtrl">
+			<div>
+				Please note: these are early versions of the WDT rework.
+				They don't look good and might hiccup.
+			</div>
+			
+			<div>
+				<a href="1-space.html">1: Space</a>
+			</div>
+			<div>
+				<a href="2-time.html">2: Time</a>
+			</div>
+			<div>
+				<a href="2b-time.html">2b: Time (triggered)</a>
+			</div>
+
+		</div>
+
+	</div>      
+</body>
+</html>
+
