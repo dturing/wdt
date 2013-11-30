@@ -1,13 +1,42 @@
 
 @font-face {
-	font-family: 'BlueHighway';
-	src: url('../font/blue_highway_regular.ttf') format('truetype');
+	font-family: 'OpenSans';
+	src: url('../font/OpenSans-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
-
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../font/OpenSans-Semibold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'OpenSans';
+	src: url('../font/OpenSans-Italic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+@font-face {
+	font-family: 'OpenSansCondensed';
+	src: url('../font/OpenSans-CondLight.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'OpenSansCondensed';
+	src: url('../font/OpenSans-CondBold.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'OpenSansCondensed';
+	src: url('../font/OpenSans-CondLightItalic.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
 body {
-	font-family: "BlueHighway";
+	font-family: "OpenSans";
 	font-weight: normal;
 	font-style: normal;
 
@@ -21,14 +50,14 @@ body {
 a {
 	color: #3465a4;
 	text-decoration: none;
-	font-weight: normal;
+	font-weight: bold;
 	text-transform: uppercase;
 }
 
 h1, h2, h3 {
 	color: lightgray;
+	font-family: "OpenSansCondensed";
 	font-weight: normal;
-	text-transform: uppercase;
 }
 
 h1 {
@@ -39,6 +68,7 @@ h1 {
 }
 h2 {
 	margin-bottom: 0em;
+	padding-
 	font-size: 26pt;
 }
 
@@ -58,7 +88,7 @@ h2 {
 
 #footer {
 	color: gray;
-	font-size: 14pt;
+	font-size: 10pt;
 	padding-top: 10px;
 	border-top: 1px solid gray;
 	position: absolute;
@@ -75,5 +105,5 @@ h2 {
 
 .tool a {
 	color: white;
-	font-size: 14pt;
+	font-size: 10pt;
 }
