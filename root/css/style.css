@@ -83,6 +83,8 @@ h2 {
 #OSD {
 	position: absolute;
 	padding: 1em;
+	text-transform: uppercase;
+	font-weight: bold;
 	font-size: 24pt;
 }
 
