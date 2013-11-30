@@ -26,8 +26,15 @@
 				var nr = e.keyCode-49;
 				if( nr>=0 && nr<$scope.tools.length ) {
 					window.location = $scope.tools[nr].href;
+					return;
 				}
-				$scope.$apply();
+
+				switch( e.keyCode ) {
+					case 81: // Q
+						// FIXME: quit app here, i dont know how
+					default:
+						console.log("unhandled key code "+e.keyCode );
+				}
 			}
 		}
 		AppCtrl.$inject = ["$scope"];

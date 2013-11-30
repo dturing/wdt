@@ -36,4 +36,5 @@ a {
 #OSD {
 	position: absolute;
 	padding: 1em;
+	font-size: 24pt;
 }

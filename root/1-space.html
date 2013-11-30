@@ -280,11 +280,13 @@
 					<div ng-switch="exercise.type">
 						<div ng-switch-when="StandAtAngle">
 							Stand at an Angle of {{exercise.angle}}°
-							- Delta {{delta | number:1 }}.
+							<br/>
+							𝚫 {{delta | number:1 }}
 						</div>
 						<div ng-switch-when="MoveTo">
 							Move to {{exercise.x}}, {{exercise.y}}
-							- Delta {{delta | number:1 }}.
+							<br/>
+							𝚫 {{delta | number:1 }}
 						</div>
 						<div ng-switch-when="Inertia">
 							Observe Inertia
