@@ -1,10 +1,8 @@
 <!doctype html>
 <html ng-app="app">
 <head>
-</head>
-
     <meta charset="utf-8">
-    <title>BADco. WDT - 2b: Time (triggered)</title>
+    <title>BADco. WDT</title>
 
     <script src="lib/angular.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -197,28 +195,25 @@
 		AppCtrl.$inject = ["$scope"];
 
 	</script>
+</head>
 
 <body>
-    <div class="container">
-
-		<div ng-controller="AppCtrl">
-			<div id="video-container">
-				<div id="canvas-container">
-					<canvas id="canvas" width="320" height="240"></canvas>
-				</div>
-			</div>
-			<div ng-switch="mode" id="OSD">
-				<div ng-switch-when="menu"></div>
-				<div ng-switch-when="countdown">
-					Start Recording in {{toGo}}s...
-				</div>
-				<div ng-switch-when="record">
-					Recording ({{toGo+s | number:0 }}s to go)
-				</div>
+	<div ng-controller="AppCtrl">
+		<div id="video-container">
+			<div id="canvas-container">
+				<canvas id="canvas" width="320" height="240"></canvas>
 			</div>
 		</div>
-
-	</div>      
+		<div ng-switch="mode" id="OSD">
+			<div ng-switch-when="menu"></div>
+			<div ng-switch-when="countdown">
+				Start Recording in {{toGo}}s...
+			</div>
+			<div ng-switch-when="record">
+				Recording ({{toGo+s | number:0 }}s to go)
+			</div>
+		</div>
+	</div>
 </body>
 </html>
 

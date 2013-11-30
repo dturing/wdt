@@ -1,10 +1,8 @@
 <!doctype html>
 <html ng-app="app">
 <head>
-</head>
-
     <meta charset="utf-8">
-    <title>BADco. WDT - 2: Time</title>
+    <title>BADco. WDT</title>
 
     <script src="lib/angular.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -182,22 +180,19 @@
 		AppCtrl.$inject = ["$scope"];
 
 	</script>
+</head>
 
 <body>
-    <div class="container">
-
-		<div ng-controller="AppCtrl">
-			<div id="video-container">
-				<div id="canvas-container">
-					<canvas id="canvas" width="320" height="240"></canvas>
-				</div>
-			</div>
-			<div id="OSD">
-				{{mode}} {{duration}}s
+	<div ng-controller="AppCtrl">
+		<div id="video-container">
+			<div id="canvas-container">
+				<canvas id="canvas" width="320" height="240"></canvas>
 			</div>
 		</div>
-
-	</div>      
+		<div id="OSD">
+			{{mode}} {{duration}}s
+		</div>
+	</div>
 </body>
 </html>
 

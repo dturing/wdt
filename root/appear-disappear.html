@@ -23,7 +23,7 @@
 
 				//"videotestsrc pattern=snow"
 				"filesrc location=/home/dan/archive/video/aida/dance.avi ! decodebin"
-				+" ! videoconvert ! video/x-raw, format=RGBA, width=320, height=240 ! appsink name=sink");
+				+" ! avg ! videoconvert ! video/x-raw, format=RGBA, width=320, height=240 ! appsink name=sink");
 
 			var appsink = pipeline.findChild("sink");
 

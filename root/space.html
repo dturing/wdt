@@ -1,10 +1,8 @@
 <!doctype html>
 <html ng-app="app">
 <head>
-</head>
-
     <meta charset="utf-8">
-    <title>BADco. WDT - 1: Space</title>
+    <title>BADco. WDT</title>
 
     <script src="lib/angular.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -276,45 +274,42 @@
 		AppCtrl.$inject = ["$scope"];
 
 	</script>
+</head>
 
 <body>
-    <div class="container">
-
-		<div ng-controller="AppCtrl">
-			<div id="video-container">
-				<div id="canvas-container">
-					<canvas id="canvas" width="320" height="240"></canvas>
-				</div>
-			</div>
-
-			<div id="OSD">
-				<div>
-					<div ng-switch="exercise.type">
-						<div ng-switch-when="StandAtAngle">
-							Stand at an Angle of {{exercise.angle}}°
-							<br/>
-							𝚫 {{delta | number:1 }}
-						</div>
-						<div ng-switch-when="MoveTo">
-							Move to {{exercise.x}}, {{exercise.y}}
-							<br/>
-							𝚫 {{delta | number:1 }}
-						</div>
-						<div ng-switch-when="Inertia">
-							Observe Inertia
-						</div>
-						<div ng-switch-when="Cage">
-							Stay in the Cage
-						</div>
-					</div>
-				</div>
-				<div style="opacity:{{OSDOpacity}}">
-					Threshold: {{threshold | number:0 }}
-				</div>
+	<div ng-controller="AppCtrl">
+		<div id="video-container">
+			<div id="canvas-container">
+				<canvas id="canvas" width="320" height="240"></canvas>
 			</div>
 		</div>
 
-	</div>      
+		<div id="OSD">
+			<div>
+				<div ng-switch="exercise.type">
+					<div ng-switch-when="StandAtAngle">
+						Stand at an Angle of {{exercise.angle}}°
+						<br/>
+						𝚫 {{delta | number:1 }}
+					</div>
+					<div ng-switch-when="MoveTo">
+						Move to {{exercise.x}}, {{exercise.y}}
+						<br/>
+						𝚫 {{delta | number:1 }}
+					</div>
+					<div ng-switch-when="Inertia">
+						Observe Inertia
+					</div>
+					<div ng-switch-when="Cage">
+						Stay in the Cage
+					</div>
+				</div>
+			</div>
+			<div style="opacity:{{OSDOpacity}}">
+				Threshold: {{threshold | number:0 }}
+			</div>
+		</div>
+	</div>
 </body>
 </html>
 
