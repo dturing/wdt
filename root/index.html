@@ -4,10 +4,9 @@
 </head>
 
     <meta charset="utf-8">
-    <title>BADco. WDT-NG</title>
+    <title>BADco. WDT</title>
 
     <script src="lib/angular.min.js"></script>
-    
 	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 
 
@@ -17,10 +16,25 @@
 		var AppCtrl = function($scope) {
 
 			$scope.tools = [
-				{ name:"1: Space", href:"1-space.html" },
-				{ name:"2: Time", href:"2-time.html" },
-				{ name:"2b: Time (triggered)", href:"2b-time.html" },
+				{ name:"Matching Positions", href:"space.html#positions", img:"img/matching-positions.png" },
+				{ name:"Inertia", href:"space.html#inertia", img:"img/inertia.png" },
+				{ name:"Cage", href:"space.html#cage", img:"img/cage.png" },
+
+				{ name:"Reverse and Delay", href:"reverse-and-delay.html", img:"img/reverse-and-delay.png" },
+				{ name:"Capture and Replay", href:"capture-and-replay.html", img:"img/capture-and-replay.png" },
+				{ name:"Appear - Disappear", href:"appear-disappear.html", img:"img/appear-disappear.png" },
 			];
+
+			$scope.toolRows = [];
+			var row = [];
+			for( i in $scope.tools ) {
+				row.push( $scope.tools[i] );
+				if( row.length==3 ) {
+					$scope.toolRows.push(row);
+					row = [];
+				}
+			}
+			$scope.toolRows.push(row);
 
 			document.onkeydown = function(e) {
 				var nr = e.keyCode-49;
@@ -31,7 +45,7 @@
 
 				switch( e.keyCode ) {
 					case 81: // Q
-						// FIXME: quit app here, i dont know how
+						require("nw.gui").App.quit();
 					default:
 						console.log("unhandled key code "+e.keyCode );
 				}
@@ -45,21 +59,22 @@
     <div class="container">
 
 		<div ng-controller="AppCtrl">
-			<div>
-				Please note: these are early versions of the WDT rework.
-				They don't look good and might hiccup.
-			</div>
-			
-			<div>
-				<a href="1-space.html">1: Space</a>
-			</div>
-			<div>
-				<a href="2-time.html">2: Time</a>
-			</div>
-			<div>
-				<a href="2b-time.html">2b: Time (triggered)</a>
+			<h2>BADco, Turing & Koch</h2>
+			<h1>Whatever Dance Toolbox</h1>
+
+			<div ng-repeat="row in toolRows">
+				<div class="tool" ng-repeat="tool in row">
+					<a href="{{tool.href}}">
+						<img src="{{tool.img}}"/><br/>
+						{{tool.name}}
+					</a>
+				</div>
 			</div>
 
+			<div id="footer">
+				This is release 1.9.1 of the BADco. Whatever Dance Toolbox.<br/>
+				Produced and © 2013, Daniel Turing, Anton Koch and BADco.
+			</div>
 		</div>
 
 	</div>      

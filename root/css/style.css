@@ -11,7 +11,7 @@ body {
 	font-weight: normal;
 	font-style: normal;
 
-	background: black;
+	background: #333;
 	color: white;
 	overflow: hidden;
 	margin: 50px;
@@ -19,10 +19,27 @@ body {
 }
 
 a {
+	color: #3465a4;
 	text-decoration: none;
 	font-weight: normal;
-	color: #3465a4;
 	text-transform: uppercase;
+}
+
+h1, h2, h3 {
+	color: lightgray;
+	font-weight: normal;
+	text-transform: uppercase;
+}
+
+h1 {
+	font-size: 32pt;
+	margin-top: 0em;
+	padding-bottom: 10px;
+	border-bottom: 1px solid gray;
+}
+h2 {
+	margin-bottom: 0em;
+	font-size: 26pt;
 }
 
 #video-container {
@@ -37,4 +54,26 @@ a {
 	position: absolute;
 	padding: 1em;
 	font-size: 24pt;
+}
+
+#footer {
+	color: gray;
+	font-size: 14pt;
+	padding-top: 10px;
+	border-top: 1px solid gray;
+	position: absolute;
+	bottom: 1em;
+	width: 100%;
+}
+
+.tool {
+	display: inline-block;
+	text-align: center;
+	padding: 1em;
+	width: 150px;
+}
+
+.tool a {
+	color: white;
+	font-size: 14pt;
 }

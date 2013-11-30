@@ -13,21 +13,33 @@
 		angular.module('app', []);
 
 		var AppCtrl = function($scope) {
-			$scope.exercises = [
-				{ type:"Inertia" },
-				{ type:"StandAtAngle", angle:45. },
-				{ type:"StandAtAngle", angle:0. },
-				{ type:"StandAtAngle", angle:180. },
-				{ type:"StandAtAngle", angle:316. },
-				{ type:"MoveTo", x:.8, y:.7 },
-				{ type:"StandAtAngle", angle:95. },
-				{ type:"MoveTo", x:.1, y:.75 },
-				{ type:"StandAtAngle", angle:212. },
-				{ type:"StandAtAngle", angle:114. },
-				{ type:"MoveTo", x:.9, y:.23 },
-				{ type:"Cage", left:.2, top:.2, right:.8, bottom: 1.1 },
-				{ type:"Cage", left:.35, top:.15, right:.6, bottom: 1.1 },
-			];
+			switch( window.location.hash ) {
+				case "#inertia":
+					$scope.exercises = [
+						{ type:"Inertia" }
+					];
+					break;
+				case "#cage":
+					$scope.exercises = [
+						{ type:"Cage", left:.2, top:.2, right:.8, bottom: 1.1 },
+						{ type:"Cage", left:.35, top:.15, right:.6, bottom: 1.1 },
+					];
+					break;
+				default:
+					$scope.exercises = [
+						{ type:"StandAtAngle", angle:45. },
+						{ type:"StandAtAngle", angle:0. },
+						{ type:"StandAtAngle", angle:180. },
+						{ type:"StandAtAngle", angle:316. },
+						{ type:"MoveTo", x:.8, y:.7 },
+						{ type:"StandAtAngle", angle:95. },
+						{ type:"MoveTo", x:.1, y:.75 },
+						{ type:"StandAtAngle", angle:212. },
+						{ type:"StandAtAngle", angle:114. },
+						{ type:"MoveTo", x:.9, y:.23 },
+					];
+					break;
+			}
 
 			$scope.exerciseIndex = 0;
 			$scope.exercise = $scope.exercises[$scope.exerciseIndex];
