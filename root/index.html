@@ -8,16 +8,7 @@
 
     <script src="lib/angular.min.js"></script>
     
-    <style type="text/css">
-    
-		body {
-			background: black;
-			color: white;
-			overflow: hidden;
-			margin: 50px;
-			font-size: 16px;
-		}
-    </style>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 
 
 	<script language="javascript">
@@ -25,6 +16,19 @@
 
 		var AppCtrl = function($scope) {
 
+			$scope.tools = [
+				{ name:"1: Space", href:"1-space.html" },
+				{ name:"2: Time", href:"2-time.html" },
+				{ name:"2b: Time (triggered)", href:"2b-time.html" },
+			];
+
+			document.onkeydown = function(e) {
+				var nr = e.keyCode-49;
+				if( nr>=0 && nr<$scope.tools.length ) {
+					window.location = $scope.tools[nr].href;
+				}
+				$scope.$apply();
+			}
 		}
 		AppCtrl.$inject = ["$scope"];
 

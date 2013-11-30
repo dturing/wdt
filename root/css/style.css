@@ -1,0 +1,39 @@
+
+@font-face {
+	font-family: 'BlueHighway';
+	src: url('../font/blue_highway_regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body {
+	font-family: "BlueHighway";
+	font-weight: normal;
+	font-style: normal;
+
+	background: black;
+	color: white;
+	overflow: hidden;
+	margin: 50px;
+	font-size: 18pt;
+}
+
+a {
+	text-decoration: none;
+	font-weight: normal;
+	color: #3465a4;
+	text-transform: uppercase;
+}
+
+#video-container {
+	position: absolute;
+}
+
+#canvas-container {
+	z-index: -1;
+}
+
+#OSD {
+	position: absolute;
+	padding: 1em;
+}

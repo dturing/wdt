@@ -7,27 +7,7 @@
     <title>BADco. WDT - 1: Space</title>
 
     <script src="lib/angular.min.js"></script>
-	
-    <style type="text/css">
-    
-		body {
-			background: black;
-			color: white;
-			overflow: hidden;
-			margin: 50px;
-			font-size: 16px;
-		}
-
-		#video-container {
-			position: absolute;
-			z-index: -1;
-		}
-
-		#canvas-container {
-		}
-      
-    </style>
-
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
 
 	<script language="javascript">
 		angular.module('app', []);
@@ -67,6 +47,23 @@
 				$scope.nextExercise();
 			}
 
+			$scope.OSDOpacity = 0;
+			var fade;
+			$scope.showOSD = function() {
+				$scope.OSDOpacity = 1;
+				if( !fade ) {
+					fade = setInterval( function() {
+						$scope.OSDOpacity *= .9;
+						if( $scope.OSDOpacity<.01 ) {
+							$scope.OSDOpacity=0;
+							clearInterval(fade);
+							fade=undefined;
+						}
+						$scope.$apply();
+					}, 66 );
+				}
+			}
+
 			function deg2rad( v ) {
 				return ((v/180)*-Math.PI);
 			}
@@ -89,19 +86,21 @@
 				//"videotestsrc pattern=snow"
 				"filesrc location=/home/dan/archive/video/aida/dance.avi ! decodebin"
 				+" ! videoconvert ! video/x-raw, format=GRAY8, width=320, height=240"
-				+" ! motion weight=0.000001 scale=2 shift=-10 ! videoconvert "
-				+" ! flip h=true ! blur ! threshold threshold="+$scope.threshold
-				+" ! extremes ! camshift ! acc "
+				+" ! motion name=motion weight=0.000001 scale=2 shift=-10 ! videoconvert "
+				+" ! flip h=true ! blur ! threshold name=threshold threshold="+$scope.threshold
+				+" ! extremes name=extremes ! camshift name=camshift ! acc "
 				+" ! multiplys scale=.6 "
 				+" ! videoconvert ! video/x-raw, format=RGBA ! appsink name=sink");
 
 			var appsink = pipeline.findChild("sink");
-			var extremes = pipeline.findChild("extremes0");
-			var camshift = pipeline.findChild("camshift0");
-			var threshold = pipeline.findChild("threshold0");
+			var motion = pipeline.findChild("motion");
+			var extremes = pipeline.findChild("extremes");
+			var camshift = pipeline.findChild("camshift");
+			var threshold = pipeline.findChild("threshold");
 
 			var videoContainer = document.getElementById("video-container");
 			var canvasContainer = document.getElementById("canvas-container");
+			var OSD = document.getElementById("OSD");
 			window.onresize = function(e) {
 				var ww = window.innerWidth;
 				var wh = window.innerHeight;
@@ -113,6 +112,9 @@
 				var ofsy = (wh-height)/2;
 				videoContainer.style.left = ""+(ofsx)+"px";
 				videoContainer.style.top = ""+(ofsy)+"px";
+
+				OSD.style.left = ""+((ww-(width*scale))/2)+"px";
+				OSD.style.top = ""+((wh-(height*scale))/2)+"px";
 			}
 			window.onresize();
 
@@ -120,10 +122,12 @@
 				switch( e.keyCode ) {
 					case 38: // up
 						$scope.threshold = Math.min( 255, $scope.threshold+3);
+						$scope.showOSD();
 						threshold.set("threshold", $scope.threshold );
 						break;
 					case 40: // down
 						$scope.threshold = Math.max( 0, $scope.threshold-3);
+						$scope.showOSD();
 						threshold.set("threshold", $scope.threshold );
 						break;
 					case 39: // right
@@ -131,6 +135,13 @@
 						break;
 					case 37: // left;
 						$scope.previousExercise();
+						break;
+					case 32: // space:
+						motion.set("reset",true);
+						break;
+					case 81: // Q
+						pipeline.stop();
+						window.location="index.html";
 						break;
 					default:
 						console.log("unhandled key code "+e.keyCode );
@@ -263,25 +274,28 @@
 					<canvas id="canvas" width="320" height="240"></canvas>
 				</div>
 			</div>
-			<div>
-				Treshold: {{threshold | number:0 }}
-			</div>
-			<div>
-				<div ng-switch="exercise.type">
-					<div ng-switch-when="StandAtAngle">
-						Stand at an Angle of {{exercise.angle}}°
-						- Delta {{delta | number:1 }}.
+
+			<div id="OSD">
+				<div>
+					<div ng-switch="exercise.type">
+						<div ng-switch-when="StandAtAngle">
+							Stand at an Angle of {{exercise.angle}}°
+							- Delta {{delta | number:1 }}.
+						</div>
+						<div ng-switch-when="MoveTo">
+							Move to {{exercise.x}}, {{exercise.y}}
+							- Delta {{delta | number:1 }}.
+						</div>
+						<div ng-switch-when="Inertia">
+							Observe Inertia
+						</div>
+						<div ng-switch-when="Cage">
+							Stay in the Cage
+						</div>
 					</div>
-					<div ng-switch-when="MoveTo">
-						Move to {{exercise.x}}, {{exercise.y}}
-						- Delta {{delta | number:1 }}.
-					</div>
-					<div ng-switch-when="Inertia">
-						Observe Inertia
-					</div>
-					<div ng-switch-when="Cage">
-						Stay in the Cage
-					</div>
+				</div>
+				<div style="opacity:{{OSDOpacity}}">
+					Threshold: {{threshold | number:0 }}
 				</div>
 			</div>
 		</div>
