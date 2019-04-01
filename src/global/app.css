@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'Barlow';
+  src: url('/assets/fonts/Barlow-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Barlow';
+  font-weight: bold;
+  src: url('/assets/fonts/Barlow-Bold.ttf');
+}
+
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: Barlow,Helvetica,Arial,sans-serif;
+}
+
+body {
+	background: black;
+	color: white;
+}
