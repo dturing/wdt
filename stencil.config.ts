@@ -8,8 +8,9 @@ export const config: Config = {
   outputTargets: [
     {
       type: 'www',
+      dir: 'wdt',
       // uncomment the following line to disable service workers in production
-      // serviceWorker: null
+      //serviceWorker: null
     }
   ],
   devServer: {

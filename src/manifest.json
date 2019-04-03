@@ -1,6 +1,6 @@
 {
-  "name": "Stencil Starter",
-  "short_name": "Stencil",
+  "name": "Whatever Dance Tool",
+  "short_name": "WDT",
   "start_url": "/",
   "display": "standalone",
   "icons": [{

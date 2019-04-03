@@ -7,11 +7,15 @@
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
-    "test.watch": "stencil test --spec --e2e --watchAll"
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "deploy": "rsync -ac wdt/ turing@danturing.com:wdt.danturing.com/"
   },
   "dependencies": {
-    "@stencil/core": "~0.16.2",
-    "@stencil/router": "~0.3.1"
+    "@stencil/core": "^0.17.2",
+    "@stencil/router": "^0.3.3"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "workbox-build": "3.4.1"
+  }
 }
