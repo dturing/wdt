@@ -161,6 +161,7 @@ export class WAnalysis {
 			if (dst) {
 				let imgData = new ImageData(new Uint8ClampedArray(dst.data), dst.cols, dst.rows);
 				this.context.save();
+				this.context.clearRect(0,0,this.width,this.height);
 				this.context.putImageData(imgData, 0, 0);
 				//this.context.drawImage(imgData,0,0);
 				this.context.restore();

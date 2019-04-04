@@ -2,6 +2,8 @@ import { Component, Prop, Watch } from '@stencil/core';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
 
+const FRAMERATE = 30;
+
 @Component({
   tag: 'w-delay',
   styleUrl: 'w-delay.css',
@@ -11,7 +13,7 @@ export class WDelay {
 
   @Prop({ mutable:true }) speed: number = 1.0;
 
-  @Prop({ mutable:true }) frames: number = 30*3;
+  @Prop({ mutable:true }) frames: number = FRAMERATE*3;
   @Watch("frames")
   changeFrames(newValue:number, oldValue:number) {
     if (newValue>oldValue) {
@@ -33,6 +35,8 @@ export class WDelay {
   private actualWritePos:number = 0;
   private writePos:number = 0;
 
+  private keyboardListener:any;
+
   private assureValidPositions() {
     while (this.readPos<0) this.readPos+=this.frames;
     this.readPos = this.readPos % this.frames;
@@ -45,7 +49,7 @@ export class WDelay {
   }
 
   componentDidLoad () {
-    this.writePos = this.actualWritePos = this.frames-3;
+    this.reset();
 
     if (this.analysis) {
       console.log("Analysis exists. clear first");
@@ -55,13 +59,13 @@ export class WDelay {
       (width,height) => {
         this.inputWidth = width;
         this.inputHeight = height;
-        for (let i=0; i<this.frames; i++) {
-           this.tape[i] = new cv.Mat(width, height, cv.CV_8UC4);
+        for (let i=0; i<FRAMERATE*10; i++) {
+           this.tape[i] = new cv.Mat(this.inputWidth, this.inputHeight, cv.CV_8UC4);
         }
       },
       (src,_width,_height, t) => {
 
-        let fps = 30;
+        let fps = FRAMERATE;
 
         this.writePos = this.writePos + (t/fps);
 
@@ -82,35 +86,50 @@ export class WDelay {
         return ret;
       },
       (ctx,w,h) => {
+//        let l = 300;
+        let r = 40;
+
         ctx.clearRect(0,0,w,h);
         ctx.save();
 
+        ctx.translate(50+r,50+r);
+
         ctx.font = "26px Barlow";
         ctx.fillStyle = "white";
-        ctx.fillText(""+(this.frames/30)+"s", 30, 50);
+        ctx.textAlign = "center";
+        ctx.fillText(""+(this.frames/30)+"s", 0, 10);
 
-        let l = 300;
-
+/*
         ctx.strokeWidth = 0.2;
         ctx.translate(30,70);
         ctx.beginPath();
         ctx.moveTo(0,0);
         ctx.lineTo(l,0);
-//        ctx.closePath();
         ctx.strokeStyle = "white";
+        ctx.stroke();
+*/
+        ctx.strokeWidth = 0.2;
+        ctx.beginPath();
+        ctx.arc(0,0,r,0,2*Math.PI)
+        ctx.strokeStyle = "gray";
         ctx.stroke();
 
         ctx.strokeStyle = "none";
 
         ctx.save();
           ctx.fillStyle = "#8ae234";
-          ctx.translate((this.readPos/this.frames)*l,0);
+          //ctx.translate((this.readPos/this.frames)*l,0);
+          ctx.rotate((this.readPos/this.frames)*Math.PI*2,0);
+          ctx.translate(0,r);
           this.fillTriangle(ctx);
         ctx.restore();
 
         ctx.save();
           ctx.fillStyle = "#ef2929";
-          ctx.translate((this.actualWritePos/this.frames)*l,0);
+//          ctx.translate((this.actualWritePos/this.frames)*l,0);
+          ctx.rotate((this.actualWritePos/this.frames)*Math.PI*2,0);
+          ctx.translate(0,r);
+          ctx.rotate(Math.PI);
           this.fillTriangle(ctx);
         ctx.restore();
 /*
@@ -122,12 +141,39 @@ export class WDelay {
 */
         ctx.restore();
       });
-     console.log("Initialized analysis:", this.analysis);
+
+
+    this.keyboardListener = (ev) => {
+      switch(ev.key) {
+        case "ArrowUp":
+          this.frames += FRAMERATE;
+          this.reset();
+          break;
+        case "ArrowDown":
+          this.frames -= FRAMERATE;
+          this.reset();
+          break;
+        case "ArrowLeft":
+        case "ArrowRight":
+          this.speed *= -1;
+          this.reset();
+          break;
+      }
+    };
+    window.addEventListener("keydown", this.keyboardListener);
+  }
+
+  reset() {
+    if (this.frames > FRAMERATE*10) this.frames = FRAMERATE*10;
+    if (this.frames < FRAMERATE*2) this.frames = FRAMERATE*2;
+    this.readPos = 3;
+    this.writePos = this.actualWritePos = 0;
   }
 
   componentDidUnload() {
-    console.log("DidUnload");
     this.analysis.unload();
+    window.removeEventListener("keydown", this.keyboardListener);
+    delete this.keyboardListener;
   }
 
   fillTriangle(ctx) {
