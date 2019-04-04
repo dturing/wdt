@@ -1,4 +1,5 @@
-import { Component, Prop, Watch } from '@stencil/core';
+import { Component, Prop, Watch, State } from '@stencil/core';
+import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
 
@@ -10,6 +11,7 @@ const FRAMERATE = 30;
   shadow: true
 })
 export class WDelay {
+  @Prop() history: RouterHistory;
 
   @Prop({ mutable:true }) speed: number = 1.0;
 
@@ -25,6 +27,8 @@ export class WDelay {
     }
   }
 
+  @State() showHelp = false;
+
   private analysis:WAnalysis;
 
   private inputWidth:number;
@@ -36,6 +40,7 @@ export class WDelay {
   private writePos:number = 0;
 
   private keyboardListener:any;
+  private showHelpTimer:number = 0;
 
   private assureValidPositions() {
     while (this.readPos<0) this.readPos+=this.frames;
@@ -82,6 +87,8 @@ export class WDelay {
 
 //        console.log(""+(Math.round(10000/t)/10)+" fps");
 
+        this.showHelpTimer--;
+        if (this.showHelpTimer==0) this.showHelp = false;
 
         return ret;
       },
@@ -144,20 +151,42 @@ export class WDelay {
 
 
     this.keyboardListener = (ev) => {
+      console.log(ev.key);
       switch(ev.key) {
+        
         case "ArrowUp":
           this.frames += FRAMERATE;
           this.reset();
           break;
+        
         case "ArrowDown":
           this.frames -= FRAMERATE;
           this.reset();
           break;
+
         case "ArrowLeft":
-        case "ArrowRight":
-          this.speed *= -1;
+          this.speed = -1;
           this.reset();
           break;
+
+        case "ArrowRight":
+          this.speed = 1;
+          this.reset();
+          break;
+
+        case "q":
+         // window.history.back();
+          this.history.replace("/", {});
+          break;
+
+        case " ":
+          this.showHelp = !this.showHelp;
+          this.showHelpTimer = -1;
+          break;
+
+        default:
+          this.showHelpTimer = 200;
+          this.showHelp = true;
       }
     };
     window.addEventListener("keydown", this.keyboardListener);
@@ -187,6 +216,17 @@ export class WDelay {
   }
 
   render() {
-      return (<div/>);
+      if (this.showHelp) {
+        return <ul class="help">
+            <li><span class="key">↥</span> Longer Tape</li>
+            <li><span class="key">↧</span> Shorter Tape</li>
+            <li><span class="key">↤</span> Reverse Mode</li>
+            <li><span class="key">↦</span> Delay Mode</li>
+            <li><span class="key">Q</span> Quit</li>
+          </ul>;
+      } else {
+        return <div/>
+      }
+      //
   }
 }

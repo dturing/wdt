@@ -16,7 +16,6 @@ export class WSetup {
 
   componentDidLoad() {
       loadOpenCv((_cv)=>{
-        console.log("CV loaded:");
         this.loading = false;
       });
 
