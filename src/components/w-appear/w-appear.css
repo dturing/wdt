@@ -1,8 +1,21 @@
-button {
-	font-size: 30pt;
-	padding: 10px;
-	background-color: rgba(0,0,0,0.3);
-	color: white;
-	border: none;
-	background: none;
+.help {
+  padding: 1em;
+  margin: 2em;
+  background-color: black;
+  color: white;
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+ul {
+	list-style: none;
+	line-height: 200%;
+}
+
+.key {
+	display: inline-block;
+	text-align: center;
+	width: 20px;
+	color: lightgray;
 }

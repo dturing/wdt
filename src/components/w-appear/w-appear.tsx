@@ -1,4 +1,5 @@
-import { Component, Prop } from '@stencil/core';
+import { Component, Prop, State } from '@stencil/core';
+import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
 
@@ -8,14 +9,20 @@ import { CV as cv } from '../../helpers/cv';
   shadow: true
 })
 export class WAppear {
+  @Prop() history: RouterHistory;
 
-  @Prop() alpha: number = 0.005;
+  @Prop() alpha: number = 0.006;
+
+  @State() showHelp = false;
 
   private analysis:WAnalysis;
 
   private tmp:any;
   private dst1:any;
   private background:any;
+
+  private keyboardListener:any;
+  private showHelpTimer:number = 0;
 
   componentDidLoad() {
     this.analysis = new WAnalysis(640, 480,
@@ -36,25 +43,50 @@ export class WAppear {
 
         this.background.convertTo(this.dst1, cv.CV_8U);
 
+        this.showHelpTimer--;
+        if (this.showHelpTimer==0) this.showHelp = false;
+
         return this.dst1;
       },
       () => {
 //        console.log("DRAW");
       });
-     console.log("Initialized analysis:", this.analysis);
+
+    this.keyboardListener = (ev) => {
+      console.log(ev.key);
+      switch(ev.key) {
+        
+        case "q":
+          this.history.replace("/", {});
+          break;
+
+        case " ":
+          this.showHelp = !this.showHelp;
+          this.showHelpTimer = -1;
+          break;
+
+        default:
+          this.showHelpTimer = 200;
+          this.showHelp = true;
+      }
+    };
+    window.addEventListener("keydown", this.keyboardListener);
   }
 
   componentDidUnload() {
     this.analysis.unload();
+    window.removeEventListener("keydown", this.keyboardListener);
+    delete this.keyboardListener;
   }
 
   render() {
-      return (
-          <stencil-route-link url='/'>
-            <button>
-              ←
-            </button>
-          </stencil-route-link>
-      );
+      if (this.showHelp) {
+        return <ul class="help">
+            <li><span class="key">Q</span> Quit</li>
+          </ul>;
+      } else {
+        return <div/>
+      }
+      //
   }
 }
