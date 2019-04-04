@@ -4,6 +4,7 @@
   background-color: rgba(255,255,255,0.3);
   width: 300px;
   margin-left: calc(50vw - 150px);
+  margin-top: calc(50vh - 150px);
   color: black;
 }
 

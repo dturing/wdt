@@ -8,6 +8,8 @@ export class WAnalysis {
 
 	private width:number;
 	private height:number;
+	private realWidth:number;
+	private realHeight:number;
 
 	private _init:any; // function
 	private _process:any; // function
@@ -27,6 +29,9 @@ export class WAnalysis {
 			init, process, draw) {
 		this.width = width;
 		this.height = height;
+
+		this.realWidth = width;
+		this.realHeight = height;
 
 		this._init = init;
 		this._process = process;
@@ -53,6 +58,34 @@ export class WAnalysis {
 		this.overlayCanvasElement.height = window.innerHeight * dpr;
 
 		this.overlayContext.scale(dpr, dpr);
+
+
+
+    	let windowAspect = window.innerWidth/window.innerHeight;
+    	let aspect = this.width/this.height;
+
+
+    	if (windowAspect > aspect) {
+	        this.realWidth = window.innerHeight*aspect;
+	        this.realHeight = window.innerHeight;
+    	} else {
+	        this.realWidth = window.innerWidth;
+	        this.realHeight = window.innerWidth/aspect;
+    	}
+
+        this.canvasElement.style.width = ""+this.realWidth+"px";
+        this.canvasElement.style.height = ""+this.realHeight+"px";
+
+        this.overlayCanvasElement.width = this.realWidth;
+		this.overlayCanvasElement.height = this.realHeight;
+
+        this.overlayCanvasElement.style.top = 
+        this.canvasElement.style.top = 
+        	""+((window.innerHeight-this.realHeight)/2)+"px";
+        this.overlayCanvasElement.style.left = 
+        this.canvasElement.style.left = 
+        	""+((window.innerWidth-this.realWidth)/2)+"px";
+        
 	}
 
 	startCamera() {
@@ -69,6 +102,8 @@ export class WAnalysis {
 	        	this.videoElement.style.display = "none";
 	        	document.body.appendChild(this.videoElement);
 
+//        		let i = stream.getTracks()[0].getSettings();
+
 	        	this.stream = stream;
 	            this.videoElement.srcObject = stream;
 	            this.videoElement.play();
@@ -79,11 +114,7 @@ export class WAnalysis {
 	            this.videoElement.addEventListener('canplay', () => { this.videoCanPlay() }, false);
 
 
-	            this.canvasElement.style.width = "100vw";
-	            this.canvasElement.style.height = "100vh";
 	            this.canvasElement.style.position = "absolute";
-	            this.canvasElement.style.left = "0";
-	            this.canvasElement.style.top = "0";
 	            this.canvasElement.style.zIndex = "-1";
 	            el.appendChild(this.canvasElement);
 
@@ -91,8 +122,8 @@ export class WAnalysis {
     			this.canvasElement.height = this.height;
     			this.context = this.canvasElement.getContext("2d");
 
-	            this.overlayCanvasElement.style.width = "100vw";
-	            this.overlayCanvasElement.style.height = "100vh";
+	            //this.overlayCanvasElement.style.width = "100vw";
+	            //this.overlayCanvasElement.style.height = "100vh";
 	            this.overlayCanvasElement.style.position = "absolute";
 	            this.overlayCanvasElement.style.left = "0";
 	            this.overlayCanvasElement.style.top = "0";
@@ -135,7 +166,7 @@ export class WAnalysis {
 				this.context.restore();
 			}
 
-			if (this._draw) this._draw(this.overlayContext, window.innerWidth, window.innerHeight, tDiff);
+			if (this._draw) this._draw(this.overlayContext, this.realWidth, this.realHeight, tDiff);
 		//}
 
 		if (!this.stop)
