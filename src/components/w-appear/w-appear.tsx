@@ -11,9 +11,7 @@ import { CV as cv } from '../../helpers/cv';
 export class WAppear {
   @Prop() history: RouterHistory;
 
-  @Prop() alpha: number = 0.006;
-
-  @State() showHelp = false;
+  @State() alpha: number = 10;
 
   private analysis:WAnalysis;
 
@@ -22,6 +20,8 @@ export class WAppear {
   private background:any;
 
   componentDidLoad() {
+    this.alpha = 5;
+
     this.analysis = new WAnalysis(640, 480,
       (width,height) => {
         this.tmp = new cv.Mat(height, width, cv.CV_32FC4);
@@ -35,15 +35,35 @@ export class WAppear {
           src.convertTo(this.background, cv.CV_32F);
         }
 
-        cv.addWeighted(this.tmp, this.alpha, this.background, 1.0-this.alpha, 0, this.background);
+        let alpha = 0.001 + (Math.pow(this.alpha/10, 2)/10);
+
+        cv.addWeighted(this.tmp, alpha, this.background, 1.0-alpha, 0, this.background);
 
         this.background.convertTo(this.dst1, cv.CV_8U);
 
         return this.dst1;
       },
-      () => {
-//        console.log("DRAW");
+      (ctx,w,h) => {
+        ctx.clearRect(0,0,w,h);
+        ctx.save();
+
+        if (this.alpha) {
+          ctx.translate(50,50);
+          ctx.font = "26px Barlow";
+          ctx.fillStyle = "white";
+          ctx.textAlign = "center";
+          ctx.fillText(""+(this.alpha), 0, 10);
+        }
+
+        ctx.restore();
       });
+  }
+
+  setSpeed(change:number) {
+    this.alpha += change;
+
+    if (this.alpha > 10) this.alpha = 10;
+    if (this.alpha < 1) this.alpha = 1;
   }
 
   componentDidUnload() {
@@ -52,6 +72,8 @@ export class WAppear {
 
   render() {
     return <w-commandpalette commands={{
+          "ArrowUp":    { symbol:"↥", description:"Faster",  execute:()=>{ this.setSpeed(+1); } },
+          "ArrowDown":  { symbol:"↧", description:"Slower", execute:()=>{ this.setSpeed(-1); } },
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
         }}>
         </w-commandpalette>
