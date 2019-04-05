@@ -19,6 +19,11 @@ export class AppHome {
             This is very much in development. Lots of things will not work as expected.
           </p>
 
+          <stencil-route-link url='/test'>
+            <button>
+              Test
+            </button>
+          </stencil-route-link>
           <stencil-route-link url='/appear'>
             <button>
               Appear/Disappear

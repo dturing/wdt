@@ -21,9 +21,6 @@ export class WAppear {
   private dst1:any;
   private background:any;
 
-  private keyboardListener:any;
-  private showHelpTimer:number = 0;
-
   componentDidLoad() {
     this.analysis = new WAnalysis(640, 480,
       (width,height) => {
@@ -34,7 +31,6 @@ export class WAppear {
         src.convertTo(this.tmp, cv.CV_32F);
 
         if (!this.background) {
-          console.log("Set BG");
           this.background = new cv.Mat(height, width, cv.CV_32FC4);
           src.convertTo(this.background, cv.CV_32F);
         }
@@ -43,50 +39,22 @@ export class WAppear {
 
         this.background.convertTo(this.dst1, cv.CV_8U);
 
-        this.showHelpTimer--;
-        if (this.showHelpTimer==0) this.showHelp = false;
-
         return this.dst1;
       },
       () => {
 //        console.log("DRAW");
       });
-
-    this.keyboardListener = (ev) => {
-      console.log(ev.key);
-      switch(ev.key) {
-        
-        case "q":
-          this.history.replace("/", {});
-          break;
-
-        case " ":
-          this.showHelp = !this.showHelp;
-          this.showHelpTimer = -1;
-          break;
-
-        default:
-          this.showHelpTimer = 200;
-          this.showHelp = true;
-      }
-    };
-    window.addEventListener("keydown", this.keyboardListener);
   }
 
   componentDidUnload() {
     this.analysis.unload();
-    window.removeEventListener("keydown", this.keyboardListener);
-    delete this.keyboardListener;
   }
 
   render() {
-      if (this.showHelp) {
-        return <ul class="help">
-            <li><span class="key">Q</span> Quit</li>
-          </ul>;
-      } else {
-        return <div/>
-      }
-      //
+    return <w-commandpalette commands={{
+          "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
+        }}>
+        </w-commandpalette>
+
   }
 }
