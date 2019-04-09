@@ -19,21 +19,25 @@ export class AppHome {
             This is very much in development. Lots of things will not work as expected.
           </p>
 
-          <stencil-route-link url='/appear'>
+          <stencil-route-link url='/capture'>
             <button>
-              Appear/Disappear
+              <img src="/assets/img/capture.png" /><br/>
+              Capture and Replay
             </button>
           </stencil-route-link>
           <stencil-route-link url='/delay'>
             <button>
-              Delay and Reverse
+              <img src="/assets/img/delay.png" /><br/>
+              Reverse and Delay
             </button>
           </stencil-route-link>
-          <stencil-route-link url='/capture'>
+          <stencil-route-link url='/appear'>
             <button>
-              Capture and Replay
+              <img src="/assets/img/appear.png" /><br/>
+              Appear/Disappear
             </button>
           </stencil-route-link>
+
         </div>
       </w-setup>
     );

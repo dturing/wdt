@@ -99,6 +99,9 @@ export class WDelay {
         ctx.textAlign = "center";
         ctx.fillText(""+(this.frames/30)+"s", 0, 10);
 
+        ctx.textAlign = "left";
+        ctx.fillText(""+(this.speed<0 ? "Reverse" : "Delay"), r+20, 10);
+
 /*
         ctx.strokeWidth = 0.2;
         ctx.translate(30,70);
@@ -175,8 +178,8 @@ export class WDelay {
         <w-commandpalette commands={{
           "ArrowUp":    { symbol:"↥", description:"Longer Tape",  execute:()=>{ this.frames += FRAMERATE; this.reset(); } },
           "ArrowDown":  { symbol:"↧", description:"Shorter Tape", execute:()=>{ this.frames -= FRAMERATE; this.reset(); } },
-          "ArrowLeft":  { symbol:"↤", description:"Reverse",      execute:()=>{ this.speed = -1; this.reset(); } },
-          "ArrowRight": { symbol:"↦", description:"Delay",        execute:()=>{ this.speed = +1; this.reset(); } },
+          "ArrowLeft":  { symbol:"↤", description:"Switch Mode",  execute:()=>{ this.speed *= -1; this.reset(); } },
+          "ArrowRight": { symbol:"↦", description:"Switch Mode",  execute:()=>{ this.speed *= -1; this.reset(); } },
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
         }}>
         </w-commandpalette>
