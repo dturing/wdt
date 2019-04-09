@@ -18,9 +18,10 @@ export class WDelay {
   @Prop({ mutable:true }) frames: number = FRAMERATE*3;
   @Watch("frames")
   changeFrames(newValue:number, oldValue:number) {
-    if (newValue>oldValue) {
-        for (let i=oldValue; i<newValue; i++) {
+    if (newValue>this.tape.length) {
+        for (let i=this.tape.length; i<newValue; i++) {
            this.tape[i] = new cv.Mat(this.inputWidth, this.inputHeight, cv.CV_8UC4);
+           // TODO: clear
         }
     } else if (newValue<oldValue) {
       this.assureValidPositions();
@@ -59,7 +60,7 @@ export class WDelay {
       (width,height) => {
         this.inputWidth = width;
         this.inputHeight = height;
-        for (let i=0; i<FRAMERATE*10; i++) {
+        for (let i=0; i<this.frames; i++) {
            this.tape[i] = new cv.Mat(this.inputWidth, this.inputHeight, cv.CV_8UC4);
         }
       },
@@ -152,6 +153,11 @@ export class WDelay {
 
   componentDidUnload() {
     this.analysis.unload();
+
+    for (var img of this.tape) {
+      img.delete();
+    }
+    this.tape = [];
   }
 
   fillTriangle(ctx) {

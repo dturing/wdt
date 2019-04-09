@@ -175,6 +175,7 @@ export class WAnalysis {
 	}
 
 	unload() {
+		this.src.delete();
 		this.stop = true;
 		this.videoElement.pause();
 		this.stream.getTracks().forEach(function(track) {

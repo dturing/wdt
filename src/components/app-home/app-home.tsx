@@ -29,6 +29,11 @@ export class AppHome {
               Delay and Reverse
             </button>
           </stencil-route-link>
+          <stencil-route-link url='/capture'>
+            <button>
+              Capture and Replay
+            </button>
+          </stencil-route-link>
         </div>
       </w-setup>
     );
