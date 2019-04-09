@@ -1,17 +1,12 @@
-import { Component, Prop, Watch } from '@stencil/core';
+import { Component, Prop, State, Watch } from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
+import { WCaptureMode } from '../../helpers/w-capturemode';
+import { WCountdown } from '../w-countdown/w-countdown';
 import { CV as cv } from '../../helpers/cv';
 
 const FRAMERATE = 30;
 
-enum Mode {
-  Idle = "idle",
-  Record = "record",
-  Replay = "replay",
-  Reverse = "reverse",
-  Jitter = "jitter"
-}
 
 @Component({
   tag: 'w-capture',
@@ -46,16 +41,23 @@ export class WCapture {
   private dst2:any;
   private background:any;
 
-  private triggers:Array<{x:number,y:number,mode:Mode}> = [
+  private triggers:Array<{x:number,y:number,mode:WCaptureMode}> = [
   /* widht/height always 0.1 */
-    { mode:Mode.Record, x:0.9-0.025, y:0.025},
-    { mode:Mode.Jitter, x:0.3, y:0.025 },
-    { mode:Mode.Reverse, x:0.45, y:0.025 },
-    { mode:Mode.Replay, x:0.6, y:0.025 },
+    { mode:WCaptureMode.Record, x:0.9-0.025, y:0.025},
+    /*
+    { mode:WCaptureMode.Jitter, x:0.3, y:0.025 },
+    { mode:WCaptureMode.Reverse, x:0.45, y:0.025 },
+    { mode:WCaptureMode.Replay, x:0.6, y:0.025 },
+    */
+    { mode:WCaptureMode.Reverse, x:0.375, y:0.025 },
+    { mode:WCaptureMode.Replay, x:0.525, y:0.025 },
   ];
 
   private triggerResults:{ [key: string]: any } = {};
 
+  @State() haveCapture:boolean  = false;
+  @State() currentMode:WCaptureMode = WCaptureMode.Idle;
+  private countdown:WCountdown;
 //  private readPos:number = 0;
 //  private writePos:number = 0;
 
@@ -101,16 +103,18 @@ export class WCapture {
         cv.threshold(this.dst1, this.dst2, 50, 200, cv.THRESH_BINARY);
 
         for (let trigger of this.triggers) {
-          let rect = new cv.Rect(trigger.x*width, trigger.y*height, 0.1*width, 0.1*height);
-          let img = this.dst2.roi(rect);
-          let result = {
-            v:Math.min(300,cv.countNonZero(img)),
-          };
-          if (result.v > 80) {
-            
+          if (trigger.mode == WCaptureMode.Record || this.haveCapture) {
+            let rect = new cv.Rect(trigger.x*width, trigger.y*height, 0.1*width, 0.1*height);
+            let img = this.dst2.roi(rect);
+            let result = {
+              v:Math.min(300,cv.countNonZero(img)),
+            };
+            if (result.v > 80) {
+              this.trigger(trigger.mode);
+            }
+            this.triggerResults[trigger.mode] = result;
+            //console.log("trigger", trigger.name, ":", cv.mean(img), cv.countNonZero(img));
           }
-          this.triggerResults[trigger.mode] = result;
-          //console.log("trigger", trigger.name, ":", cv.mean(img), cv.countNonZero(img));
         }
 
         src.delete();
@@ -120,40 +124,57 @@ export class WCapture {
         ctx.clearRect(0,0,w,h);
         ctx.save();
 
-        ctx.strokeWidth = 1/w;
-        ctx.strokeStyle = "#ef2929";
+        if (this.currentMode == WCaptureMode.Idle) {
 
-        for (let trigger of this.triggers) {
-          ctx.beginPath();
-          ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
+          ctx.strokeWidth = 1/w;
+          ctx.strokeStyle = "#ef2929";
 
-          let result = this.triggerResults[trigger.mode];
-          if (result) {
-            ctx.fillStyle = "rgba(204,0,0,"+(result.v/200)+")";
-            ctx.fill();
-/*
-            ctx.save();
-              ctx.translate((0.05+trigger.x) * w, (0.05+trigger.y) * h);
-              ctx.font = "13px Barlow";
-              ctx.fillStyle = "white";
-              ctx.textAlign = "center";
-              ctx.fillText(trigger.mode+"\n"+result.v, 0, 5);
-            ctx.restore();
-            */
+          for (let trigger of this.triggers) {
+            if (trigger.mode == WCaptureMode.Record || this.haveCapture) {
+              ctx.beginPath();
+              ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
+
+              let result = this.triggerResults[trigger.mode];
+              if (result) {
+                ctx.fillStyle = "rgba(204,0,0,"+(result.v/200)+")";
+                ctx.fill();
+    /*
+                ctx.save();
+                  ctx.translate((0.05+trigger.x) * w, (0.05+trigger.y) * h);
+                  ctx.font = "13px Barlow";
+                  ctx.fillStyle = "white";
+                  ctx.textAlign = "center";
+                  ctx.fillText(trigger.mode+"\n"+result.v, 0, 5);
+                ctx.restore();
+                */
+              }
+
+              ctx.stroke();
+            }
           }
-
-          ctx.stroke();
         }
 
-          ctx.translate(50,50);
-          ctx.font = "26px Barlow";
-          ctx.fillStyle = "white";
-          ctx.textAlign = "center";
-          ctx.fillText(""+(this.frames/FRAMERATE)+"s", 0, 10);
+        ctx.translate(50,50);
+        ctx.font = "26px Barlow";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText(""+(this.frames/FRAMERATE)+"s", 0, 10);
 
         ctx.restore();
       });
 
+  }
+
+  trigger(mode:WCaptureMode) {
+    if (this.currentMode==WCaptureMode.Idle) {
+      console.log("TRIGGER", mode);
+      this.currentMode = WCaptureMode.Timer;
+      this.countdown.startCountdown(mode, 3, ()=>{
+        console.log("Countdown done. next Mode:", mode);
+        this.currentMode = WCaptureMode.Idle;
+        this.haveCapture = true;
+      });
+    }
   }
 
   reset() {
@@ -175,6 +196,7 @@ export class WCapture {
 
   render() {
     return <div>
+        <w-countdown ref={(el) => this.countdown = el as any as WCountdown } />
         <w-commandpalette commands={{
           "ArrowUp":    { symbol:"↥", description:"Longer Tape",  execute:()=>{ this.frames = Math.min( this.frames+FRAMERATE, 30*FRAMERATE); this.reset(); } },
           "ArrowDown":  { symbol:"↧", description:"Shorter Tape", execute:()=>{ this.frames = Math.max( this.frames-FRAMERATE,  2*FRAMERATE); this.reset(); } },

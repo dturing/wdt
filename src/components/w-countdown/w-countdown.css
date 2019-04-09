@@ -1,0 +1,11 @@
+.countdown {
+	position: absolute;
+	top: calc( 50vh - 150px );
+	left: calc( 50vw - 150px );
+	width: 300px;
+	text-align: center;
+
+	font-weight: bold;
+	font-size: 196px;
+	text-shadow: black 0px 0px 10px;
+}
