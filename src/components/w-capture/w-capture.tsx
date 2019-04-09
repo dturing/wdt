@@ -56,6 +56,8 @@ export class WCapture {
   private writePos:number = 0;
   private readPos:number = 0;
 
+  private slowMotion:number = 2;
+
   componentDidLoad () {
     if (this.analysis) {
       console.log("Analysis exists. clear first");
@@ -87,8 +89,8 @@ export class WCapture {
 
             if (this.writePos >= this.frames) {
               this.haveCapture = true;
-              this.currentMode = WCaptureMode.Idle;
               this.countdown.playSound();
+              this.toIdle();
             }
           }
 
@@ -96,17 +98,15 @@ export class WCapture {
           this.readPos += (t/FRAMERATE);
 
           if (this.readPos > this.frames) {
-              console.log("STOP replay");
-              this.currentMode = WCaptureMode.Idle;
+            this.toIdle();
           }
           return this.tape[Math.floor(this.readPos)];
 
         } else if (this.currentMode == WCaptureMode.SlowMotion) {
-          this.readPos += (t/FRAMERATE)*0.2;
+          this.readPos += (t/FRAMERATE)*(1/this.slowMotion);
 
           if (this.readPos > this.frames) {
-              console.log("STOP slowmo");
-              this.currentMode = WCaptureMode.Idle;
+            this.toIdle();
           }
           return this.tape[Math.floor(this.readPos)];
 
@@ -114,8 +114,7 @@ export class WCapture {
           this.readPos -= (t/FRAMERATE);
 
           if (this.readPos < 1) {
-              console.log("STOP reverse");
-              this.currentMode = WCaptureMode.Idle;
+            this.toIdle();
           }
           return this.tape[Math.floor(this.readPos)];
 
@@ -162,11 +161,16 @@ export class WCapture {
         ctx.font = "26px Barlow";
         ctx.fillStyle = "white";
         ctx.textAlign = "left";
-        ctx.fillText(""+(this.frames/FRAMERATE)+"s - "+this.currentMode, 0, 10);
+        ctx.fillText(""+(this.frames/FRAMERATE)+"s - "+this.currentMode+" - 1/"+this.slowMotion, 0, 10);
 
         ctx.restore();
       });
 
+  }
+
+  toIdle() {
+    this.currentMode = WCaptureMode.Idle;
+    this.triggerResults = {}; // TODO: avoid?
   }
 
   analyzeTriggers(_src, width, height) {
@@ -260,6 +264,8 @@ export class WCapture {
         <w-commandpalette commands={{
           "ArrowUp":    { symbol:"↥", description:"Longer Tape",  execute:()=>{ this.frames = Math.min( this.frames+FRAMERATE, 30*FRAMERATE); } },
           "ArrowDown":  { symbol:"↧", description:"Shorter Tape", execute:()=>{ this.frames = Math.max( this.frames-FRAMERATE,  2*FRAMERATE); } },
+          "ArrowLeft":  { symbol:"↤", description:"Slower Slo-Mo", execute:()=>{ this.slowMotion = Math.min( 10, this.slowMotion + 1 ); } },
+          "ArrowRight": { symbol:"↦", description:"Faster Slo-Mo", execute:()=>{ this.slowMotion = Math.max( 2, this.slowMotion - 1 ); } },
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
         }}>
         </w-commandpalette>
