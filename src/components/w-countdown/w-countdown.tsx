@@ -29,7 +29,7 @@ export class WCountdown {
     }, 1000);
   }
 
-  playSound() {
+  @Method() playSound() {
     this.audioElement.play();
   }
 

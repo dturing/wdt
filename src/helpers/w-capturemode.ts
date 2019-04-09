@@ -5,5 +5,5 @@ export enum WCaptureMode {
   Record = "record",
   Replay = "replay",
   Reverse = "reverse",
-  Jitter = "jitter"
+  SlowMotion = "slowmotion"
 }
