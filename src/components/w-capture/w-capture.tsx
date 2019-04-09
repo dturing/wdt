@@ -129,40 +129,82 @@ export class WCapture {
 
         if (this.currentMode == WCaptureMode.Idle) {
 
-          ctx.strokeWidth = 1/w;
+          ctx.lineWidth = 1;
           ctx.strokeStyle = "#ef2929";
 
           for (let trigger of this.triggers) {
             if (trigger.mode == WCaptureMode.Record || this.haveCapture) {
               ctx.beginPath();
-              ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
+//              ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
+              ctx.arc( (trigger.x+0.05) * w, (trigger.y+0.05) * h, h*0.06, 0, Math.PI*2 );
 
               let result = this.triggerResults[trigger.mode];
               if (result) {
-                ctx.fillStyle = "rgba(204,0,0,"+(result.v/200)+")";
+                ctx.fillStyle = "rgba(204,0,0,"+(0.3+result.v/200)+")";
                 ctx.fill();
-    /*
+
                 ctx.save();
-                  ctx.translate((0.05+trigger.x) * w, (0.05+trigger.y) * h);
                   ctx.font = "13px Barlow";
                   ctx.fillStyle = "white";
                   ctx.textAlign = "center";
-                  ctx.fillText(trigger.mode+"\n"+result.v, 0, 5);
+
+                  ctx.translate((0.05+trigger.x) * w, (0.03+trigger.y) * h);
+                  ctx.fillText(trigger.mode, 0, 5);
+
+                  ctx.font = "26px Barlow";
+                  switch(trigger.mode) {
+                    case WCaptureMode.Record:
+                      ctx.fillText(""+(this.frames/FRAMERATE)+"s", 0, 30);
+                      break;
+                    case WCaptureMode.SlowMotion:
+                      ctx.fillText("1/"+this.slowMotion, 0, 30);
+                      break;
+                  }
                 ctx.restore();
-                */
               }
 
               ctx.stroke();
             }
           }
-        }
+/*
+          ctx.translate(.925*w, 0.125*h/2);
+          ctx.font = "26px Barlow";
+          ctx.fillStyle = "red";
+          ctx.textAlign = "center";
+          ctx.fillText(""+(this.frames/FRAMERATE)+"s", 0, 15);
+*/
+        } else if (this.currentMode == WCaptureMode.Timer) {
 
+        } else {
+
+          let r = h*0.06;
+          let rec = this.currentMode == WCaptureMode.Record;
+
+          ctx.clearRect(0,0,w,h);
+          ctx.save();
+
+//          ctx.translate(50+r,0.125*h/2+r);
+          ctx.translate(0.925*w, 0.075*h);
+
+          ctx.lineWidth = 20;
+
+          ctx.beginPath();
+          ctx.arc(0,0,r-10,0,Math.PI*2);
+          ctx.strokeStyle ="gray";
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(0,0,r-10,-Math.PI/2,2*Math.PI*((rec?this.writePos:this.readPos)/this.frames)-Math.PI/2);
+          ctx.strokeStyle = rec ? "#cc0000" : "white";
+          ctx.stroke();
+        }
+/*
         ctx.translate(50,50);
         ctx.font = "26px Barlow";
         ctx.fillStyle = "white";
         ctx.textAlign = "left";
         ctx.fillText(""+(this.frames/FRAMERATE)+"s - "+this.currentMode+" - 1/"+this.slowMotion, 0, 10);
-
+*/
         ctx.restore();
       });
 

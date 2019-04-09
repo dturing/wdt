@@ -1,9 +1,9 @@
 
 export enum WCaptureMode {
-  Idle = "idle",
-  Timer = "timer",
-  Record = "record",
-  Replay = "replay",
-  Reverse = "reverse",
-  SlowMotion = "slowmotion"
+  Idle = "Idle",
+  Timer = "Timer",
+  Record = "Record",
+  Replay = "Replay",
+  Reverse = "Reverse",
+  SlowMotion = "Slo-Mo"
 }
