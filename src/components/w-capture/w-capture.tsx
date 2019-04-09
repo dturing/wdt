@@ -54,7 +54,6 @@ export class WCapture {
     { mode:Mode.Replay, x:0.6, y:0.025 },
   ];
 
-  private mode
   private triggerResults:{ [key: string]: any } = {};
 
 //  private readPos:number = 0;
