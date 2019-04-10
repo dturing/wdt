@@ -186,13 +186,13 @@ export class WCapture {
 //          ctx.translate(50+r,0.125*h/2+r);
           ctx.translate(0.925*w, 0.075*h);
 
-          ctx.lineWidth = 20;
-
+          ctx.lineWidth = 18;
           ctx.beginPath();
           ctx.arc(0,0,r-10,0,Math.PI*2);
           ctx.strokeStyle ="gray";
           ctx.stroke();
 
+          ctx.lineWidth = 20;
           ctx.beginPath();
           ctx.arc(0,0,r-10,-Math.PI/2,2*Math.PI*((rec?this.writePos:this.readPos)/this.frames)-Math.PI/2);
           ctx.strokeStyle = rec ? "#cc0000" : "white";
@@ -243,7 +243,7 @@ export class WCapture {
         let result = {
           v:Math.min(300,cv.countNonZero(img)),
         };
-        if (result.v > 80) {
+        if (result.v > 20) {
           this.trigger(trigger.mode);
         }
         this.triggerResults[trigger.mode] = result;
