@@ -19,6 +19,15 @@ export class AppHome {
             This is very much in development. Lots of things will not work as expected.
           </p>
 
+          <stencil-route-link url='/tasks'>
+            <button>
+              <img src="/assets/img/matching.png" /><br/>
+              Matching Positions
+            </button>
+          </stencil-route-link>
+
+          <br/>
+
           <stencil-route-link url='/capture'>
             <button>
               <img src="/assets/img/capture.png" /><br/>

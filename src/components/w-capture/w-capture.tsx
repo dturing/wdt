@@ -248,6 +248,7 @@ export class WCapture {
         }
         this.triggerResults[trigger.mode] = result;
         //console.log("trigger", trigger.name, ":", cv.mean(img), cv.countNonZero(img));
+        img.delete();
       }
     }
 

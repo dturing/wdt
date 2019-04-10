@@ -18,6 +18,7 @@ export class AppRoot {
               <stencil-route url='/appear' component='w-appear' exact={true} />
               <stencil-route url='/delay' component='w-delay' exact={true} />
               <stencil-route url='/capture' component='w-capture' exact={true} />
+              <stencil-route url='/tasks' component='w-tasks' exact={true} />
               <stencil-route url='/test' component='w-test' exact={true} />
             </stencil-route-switch>
           </stencil-router>
