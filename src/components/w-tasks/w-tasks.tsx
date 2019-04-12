@@ -47,42 +47,35 @@ export class WCapture {
         ctx.save();
 
         let cs = this.trackBox;
-        let context = ctx;
-        let lastangle = this.lastangle;
-        let rotation = 0;
         if (cs) {
-            let angle = cs.angle;
+            let angle = 90-cs.angle;
 
             let sh=90;
-            if( lastangle != -10000 ) {
-                while( angle < lastangle-sh ) angle+=sh*2;
-                while( angle > lastangle+sh ) angle-=sh*2;
+            if( this.lastangle != -10000 ) {
+                while( angle < this.lastangle-sh ) angle+=sh*2;
+                while( angle > this.lastangle+sh ) angle-=sh*2;
             }
             angle = angle % 360; //Math.fmod( angle, 360 );
-            while( angle < -180 ) angle += 360;
-            while( angle > 180 ) angle -= 360;
-            // while( box.angle<M_PI*2 ) box.angle += M_PI*2;
-            // while( box.angle>M_PI*2 ) box.angle -= M_PI*2;
-            lastangle = angle;
+            while( angle < 0 ) angle += 360;
+            while( angle > 360 ) angle -= 360;
+            this.lastangle = angle;
 
-                rotation = (angle/180)*Math.PI;
+            let rotation = ((90-angle)/180)*Math.PI;
 
-            var c = { x:cs.center.x, y:cs.center.y, 
-                      width:cs.size.width, height:cs.size.height, 
-                      angle:rotation }
-            context.fillStyle = "#3b3";
-            context.save();
 
-            context.scale(w/this.inputWidth, h/this.inputHeight);
+            ctx.fillStyle = "#8ae234";
+            ctx.save();
+
+            ctx.scale(w/this.inputWidth, h/this.inputHeight);
             
-            context.translate(c.x, c.y);
-            context.rotate(c.angle);
-            context.fillRect(-(c.width / 2), -3, c.width, 6);
-            context.fillRect(-3, -(c.height / 2), 6, c.height);
-            context.fillStyle = "#ff0";
-            context.fillRect(-5, c.height / 2 - 10, 10, 10);
+            ctx.translate(cs.center.x, cs.center.y);
+            ctx.rotate(rotation);
+            ctx.fillRect(-(cs.size.width / 2), -2, cs.size.width, 4);
+            ctx.fillRect(-2   , -(cs.size.height / 2), 4, cs.size.height);
+            ctx.fillStyle = "#edd400";
+            ctx.fillRect(-5, -cs.size.height / 2 - 10, 10, 10);
 
-            context.restore();
+            ctx.restore();
 
             ctx.translate(100,50);
             ctx.font = "26px Barlow";
@@ -153,7 +146,7 @@ export class WCapture {
     return <div>
         <w-commandpalette commands={{
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
-          "r": { symbol:"r", description:"Reset", execute:()=>{ this.background.delete(); this.background=null; } },
+          " ": { symbol:"␠", description:"Reset", execute:()=>{ this.background.delete(); this.background=null; } },
         }}>
         </w-commandpalette>
       </div>
