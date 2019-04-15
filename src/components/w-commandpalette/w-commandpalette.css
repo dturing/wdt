@@ -15,8 +15,8 @@ ul {
 
 .key {
 	display: inline-block;
-	text-align: center;
-	width: 20px;
+	text-align: right;
+	width: 50px;
 	color: lightgray;
 	text-transform: uppercase;
 }

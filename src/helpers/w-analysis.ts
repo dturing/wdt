@@ -179,9 +179,11 @@ export class WAnalysis {
 		this.src.delete();
 		this.stop = true;
 		this.videoElement.pause();
-		this.stream.getTracks().forEach(function(track) {
-            track.stop();
-        });
+		if (this.stream) {
+			this.stream.getTracks().forEach(function(track) {
+	            track.stop();
+	        });
+	    }
 		this.videoElement.parentNode.removeChild(this.videoElement);
 		this.canvasElement.parentNode.removeChild(this.canvasElement);
 		this.overlayCanvasElement.parentNode.removeChild(this.overlayCanvasElement);
