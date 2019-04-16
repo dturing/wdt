@@ -1,4 +1,4 @@
-import { Component, Prop, Method } from '@stencil/core';
+import { Component, Prop } from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
@@ -25,11 +25,8 @@ export class WCapture {
 
   private analysis:WAnalysis;
 
-  private inputWidth:number;
-  private inputHeight:number;
-
   private tmp:any;
-  private tmp2:any;
+//  private tmp2:any;
   private dst1:any;
   private dst2:any;
   private background:any;
@@ -50,10 +47,8 @@ export class WCapture {
     }
     this.analysis = new WAnalysis(160, 120,
       (width,height) => {
-        this.inputWidth = width;
-        this.inputHeight = height;
         this.tmp  = new cv.Mat(height, width, cv.CV_32FC4);
-        this.tmp2 = new cv.Mat(height, width, cv.CV_32FC1);
+        //this.tmp2 = new cv.Mat(height, width, cv.CV_32FC1);
         this.dst1 = new cv.Mat(height, width, cv.CV_8UC4);
         this.dst2 = new cv.Mat(height, width, cv.CV_8UC4);
       },
@@ -66,7 +61,6 @@ export class WCapture {
       (ctx,w,h) => {
         ctx.clearRect(0,0,w,h);
         ctx.save();
-
 
           ctx.lineWidth = 2;
           ctx.strokeStyle = "#ef2929";
