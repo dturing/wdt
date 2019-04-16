@@ -135,12 +135,12 @@ export class WCapture {
           for (let trigger of this.triggers) {
             if (trigger.mode == WCaptureMode.Record || this.haveCapture) {
               ctx.beginPath();
-//              ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
-              ctx.arc( (trigger.x+0.05) * w, (trigger.y+0.05) * h, h*0.06, 0, Math.PI*2 );
+              ctx.rect( trigger.x * w, trigger.y * h, 0.1 * w, 0.1 * h );
+//              ctx.arc( (trigger.x+0.05) * w, (trigger.y+0.05) * h, h*0.06, 0, Math.PI*2 );
 
               let result = this.triggerResults[trigger.mode];
               if (result) {
-                ctx.fillStyle = "rgba(204,0,0,"+(0.3+result.v/200)+")";
+                ctx.fillStyle = "rgba(204,0,0,"+(result.v/200)+")";
                 ctx.fill();
 
                 ctx.save();

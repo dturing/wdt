@@ -41,6 +41,9 @@ export class WCapture {
   private audioElement!: HTMLAudioElement;
 
   componentDidLoad() {
+    this.audioElement.play();
+    this.audioElement.volume = 0;
+
     if (this.analysis) {
       console.log("Analysis exists. clear first");
       this.analysis.unload();
@@ -74,8 +77,6 @@ export class WCapture {
 
         ctx.restore();
       });
-
-    this.playSound();
 
   }
 
@@ -188,13 +189,9 @@ export class WCapture {
     if (this.background) this.background.delete();
   }
 
-  @Method() playSound() {
-    this.audioElement.play();
-  }
-
   render() {
     return <div>
-        <audio src="/assets/sound/rassel.ogg" loop preload="auto" volume="0" ref={ (el) => this.audioElement = el as HTMLAudioElement }></audio>
+        <audio src="/assets/sound/rassel.ogg" loop preload="auto" ref={ (el) => this.audioElement = el as HTMLAudioElement }></audio>
         <w-commandpalette commands={{
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
           " ": { symbol:"space", description:"Reset", execute:()=>{ this.background.delete(); this.background=null; } },

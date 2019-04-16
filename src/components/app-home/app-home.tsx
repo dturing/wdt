@@ -31,6 +31,12 @@ export class AppHome {
               Inertia
             </button>
           </stencil-route-link>
+          <stencil-route-link url='/cage'>
+            <button>
+              <img src="/assets/img/cage.png" /><br/>
+              Cage
+            </button>
+          </stencil-route-link>
 
           <br/>
 

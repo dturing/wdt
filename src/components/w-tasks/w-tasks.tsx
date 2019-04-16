@@ -178,13 +178,11 @@ export class WCapture {
   }
 
   render() {
-    console.log("HIST:", this.history);
-    let history = this.history;
     return <div>
         <audio src="/assets/sound/pluck.ogg" preload="auto" ref={ (el) => this.audioElement = el as HTMLAudioElement }></audio>
         <w-commandpalette commands={{
           ...this.taskCommands,
-          "q": { symbol:"q", description:"Quit", execute:()=>{ console.log(history); this.history.replace("/", {}); } },
+          "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
           " ": { symbol:"space", description:"Reset", execute:()=>{ this.background.delete(); this.background=null; } },
         }}>
         </w-commandpalette>
