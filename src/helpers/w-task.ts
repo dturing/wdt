@@ -43,12 +43,14 @@ export class StandAtAngle extends Task {
 
   check(trackBox) :boolean {
     this.lastAngle = trackBox.angle;
-    if (Math.abs( this.targetAngle - this.lastAngle ) < 2) {
-      this.required--;
-    } else {
-      this.required = 5;
+    if (trackBox.size.width > 50 && trackBox.size.height > 50) {
+      if (Math.abs( this.targetAngle - this.lastAngle ) < 2) {
+        this.required--;
+      } else {
+        this.required = 5;
+      }
     }
-
+    
     return this.required <= 0;
   }
 
