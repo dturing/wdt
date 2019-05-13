@@ -2,7 +2,7 @@ import { Component, Prop, Method, State } from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
-import { Task, Settle } from '../../helpers/w-task';
+import { Task, Settle, StandAtAngle, MoveTo } from '../../helpers/w-task';
 import { WCommandDefinition } from '../../helpers/w-commanddefinition';
 
 @Component({
@@ -12,8 +12,9 @@ import { WCommandDefinition } from '../../helpers/w-commanddefinition';
 })
 export class WCapture {
   @Prop() history: RouterHistory;
-  @Prop() tasks: Array<Task>;
+  @Prop({ mutable: true }) tasks: Array<Task>;
 
+  @State() showEditor: boolean = false;
   @State() taskCommands: { [key: string]: WCommandDefinition };
 
   private analysis:WAnalysis;
@@ -32,7 +33,9 @@ export class WCapture {
   private audioElement!: HTMLAudioElement;
 
   private currentTask:Task = new Settle();
-  private taskIndex = 0;
+  private taskIndex = -1;
+
+  private taskList!: HTMLTextAreaElement;
 
   componentDidLoad() {
     if (this.analysis) {
@@ -71,9 +74,7 @@ export class WCapture {
           if (this.currentTask.check(this.trackBox)) {
             console.log("Task fulfilled: ", this.currentTask);
             this.playSound();
-            this.currentTask = this.tasks[this.taskIndex];
-            this.taskCommands = this.currentTask.commands();
-            this.taskIndex = (this.taskIndex+1)%this.tasks.length;
+            this.switchTaskBy(1);
           }
         }
 
@@ -177,11 +178,67 @@ export class WCapture {
     this.audioElement.play();
   }
 
+  switchTaskBy(by:number) {
+    return this.switchTaskTo(this.taskIndex+by);
+  }
+
+  switchTaskTo(to:number) {
+      while (to<0) to+=this.tasks.length;
+      this.taskIndex = to%this.tasks.length;
+      this.currentTask = this.tasks[this.taskIndex];
+      this.taskCommands = this.currentTask.commands();
+  }
+
+  editTasks() {
+    this.showEditor = !this.showEditor;
+  }
+
+  getTaskListString() {
+    return this.tasks.map(t => t.toShortString()).join("\n");
+  }
+
+  onKeyDown(e) {
+    e.stopPropagation();
+  }
+
+  applyTaskList() {
+    var newTasks = this.taskList.value.split("\n").map(line => {
+      var d = line.split(" ");
+      switch (d[0]) {
+        case "StandAtAngle":
+          return new StandAtAngle(parseFloat(d[1]));
+        case "MoveTo":
+          return new MoveTo(parseFloat(d[1]), parseFloat(d[2]));
+      }
+
+      return new MoveTo(0.5,0.5);
+    });
+
+    this.tasks = newTasks;
+    this.switchTaskBy(0);
+  }
+
   render() {
     return <div>
         <audio src="/assets/sound/pluck.ogg" preload="auto" ref={ (el) => this.audioElement = el as HTMLAudioElement }></audio>
+        { this.showEditor
+            ? <div class="taskEditor">
+                <textarea 
+                  rows={15} cols={20}
+                  onKeyDown={e => this.onKeyDown(e)}
+                  onKeyUp={_e => this.applyTaskList()}
+                  ref={(el) => this.taskList = el as HTMLTextAreaElement}
+                  >{this.getTaskListString()}</textarea>
+                <br />
+                <button onClick={ _e => this.editTasks() }>Hide</button>
+               </div>
+            : ""
+        }
         <w-commandpalette commands={{
           ...this.taskCommands,
+          "e": { symbol:"e", description:"Edit Tasks", execute:()=>{ this.editTasks(); } },
+          "n": { symbol:"n", description:"Next Task", execute:()=>{ this.switchTaskBy(1); } },
+          "p": { symbol:"p", description:"Previous Task", execute:()=>{ this.switchTaskBy(-1); } },
           "q": { symbol:"q", description:"Quit", execute:()=>{ this.history.replace("/", {}); } },
           " ": { symbol:"space", description:"Reset", execute:()=>{ this.background.delete(); this.background=null; } },
         }}>

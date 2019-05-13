@@ -1,0 +1,18 @@
+.taskEditor {
+	margin: 2em;
+	background-color: black;
+	color: white;
+	position: absolute;
+	right: 1em;
+	top: 1em;
+}
+
+.taskEditor textarea {
+	padding: 1em;
+	padding-left: 1em;
+
+	background-color: black;
+	color: white;
+
+	border: 1px solid white;
+}

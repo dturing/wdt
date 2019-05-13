@@ -17,6 +17,10 @@ export class Task {
   toString() {
     return "<base task>";
   }
+
+  toShortString() {
+    return "<base>";
+  }
 }
 
 export class Settle extends Task {
@@ -72,6 +76,10 @@ export class StandAtAngle extends Task {
   toString() {
     return "Stand at an Angle of "+this.targetAngle+"°";
   }
+
+  toShortString() {
+    return "StandAtAngle "+this.targetAngle;
+  }
 }
 
 export class MoveTo extends Task {
@@ -121,5 +129,9 @@ export class MoveTo extends Task {
 
   toString() {
     return "Move to "+(Math.round(this.targetX*100)/100)+"/"+(Math.round(this.targetY*100)/100);
+  }
+
+  toShortString() {
+    return "MoveTo "+(Math.round(this.targetX*100)/100)+" "+(Math.round(this.targetY*100)/100);
   }
 }
