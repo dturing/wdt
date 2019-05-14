@@ -12,7 +12,7 @@ export class WCameraChooser {
 
   @Event() switchCamera: EventEmitter;
 
-  componentWillLoad() {
+  componentDidLoad() {
     this.selected = window.localStorage.getItem("cameraDevice");
     this.enumerate();
     navigator.mediaDevices.ondevicechange = _e => { this.enumerate(); };
@@ -23,7 +23,7 @@ export class WCameraChooser {
       this.cameras = devices.filter(d => d.kind == "videoinput");
 
       let selectedFound = false;
-      this.cameras.forEach(cam => { if(cam.deviceId == this.selected) selectedFound == true; });
+      this.cameras.forEach(cam => { if(cam.deviceId == this.selected) selectedFound = true; });
       if (!selectedFound && this.cameras.length>0) {
         this.choose(this.cameras[0].deviceId);
       }
