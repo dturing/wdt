@@ -1,4 +1,4 @@
-import { Component, Prop } from '@stencil/core';
+import { Component, Prop, Listen } from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { CV as cv } from '../../helpers/cv';
@@ -22,6 +22,39 @@ export class WCapture {
   @Prop({ mutable:true }) right:number = 0.8;
   @Prop({ mutable:true }) top:number = 0.3;
   @Prop({ mutable:true }) bottom:number = 1.0;
+
+  @Listen("window:mousedown")
+  onMouseDown(e) {
+    let p = this.analysis.convertCoordinates(e.clientX, e.clientY);
+    this.left = p.x;
+    this.top = p.y;
+
+    let moveHandler = e => {
+      let p = this.analysis.convertCoordinates(e.clientX, e.clientY);
+      this.right = p.x;
+      this.bottom = p.y;
+    };
+    let upHandler = _e => {
+      if (this.right<this.left) {
+        let t = this.right;
+        this.right = this.left;
+        this.left = t;
+      }
+      if (this.bottom<this.top) {
+        let t = this.bottom;
+        this.bottom = this.top;
+        this.top = t;
+      }
+      this.left = Math.max(0,this.left);
+      this.top = Math.max(0,this.top);
+      this.right = Math.min(1,this.right);
+      this.bottom = Math.min(1,this.bottom);
+      window.removeEventListener("mousemove", moveHandler);
+      window.removeEventListener("mouseup", upHandler);
+    };
+    window.addEventListener("mousemove", moveHandler);
+    window.addEventListener("mouseup", upHandler);
+  }
 
   private analysis:WAnalysis;
 
@@ -64,7 +97,7 @@ export class WCapture {
 
           ctx.lineWidth = 2;
           ctx.strokeStyle = "#ef2929";
-          ctx.strokeRect(this.left*w,this.top*h,( this.right-this.left)*w,(this.bottom-this.top)*h)
+          ctx.strokeRect(this.left*w,this.top*h,((this.right-this.left)*w)-2,((this.bottom-this.top)*h)-2)
 
           ctx.strokeStyle = this.isInside ? "#8ae234" : "#edd400";
           ctx.strokeRect(this.current.l*w,this.current.t*h,( this.current.r-this.current.l)*w,(this.current.b-this.current.t)*h)
@@ -165,6 +198,10 @@ export class WCapture {
       && this.right >= this.current.r
       && this.top <= this.current.t
       && this.bottom >= this.current.b;
+
+    if (this.right-this.left > 10
+      && this.bottom-this.top > 10)
+      this.isInside = true;
 
     this.audioElement.volume = this.isInside ? 0.0 : 1.0;
 

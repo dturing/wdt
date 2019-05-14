@@ -10,6 +10,8 @@ export class WAnalysis {
 	private height:number;
 	private realWidth:number;
 	private realHeight:number;
+	private leftMargin:number;
+	private topMargin:number;
 
 	private _init:any; // function
 	private _process:any; // function
@@ -51,6 +53,13 @@ export class WAnalysis {
 	    });
 	}
 
+	convertCoordinates(x:number, y:number) {
+		return {
+			x:(x-this.leftMargin)/this.realWidth,
+			y:(y-this.topMargin)/this.realHeight
+		}
+	}
+
 	onWindowResized() {
 		var dpr = window.devicePixelRatio || 1;
 
@@ -79,12 +88,14 @@ export class WAnalysis {
         this.overlayCanvasElement.width = this.realWidth;
 		this.overlayCanvasElement.height = this.realHeight;
 
+		this.topMargin = ((window.innerHeight-this.realHeight)/2);
+		this.leftMargin = ((window.innerWidth-this.realWidth)/2);
         this.overlayCanvasElement.style.top = 
         this.canvasElement.style.top = 
-        	""+((window.innerHeight-this.realHeight)/2)+"px";
+        	""+this.topMargin+"px";
         this.overlayCanvasElement.style.left = 
         this.canvasElement.style.left = 
-        	""+((window.innerWidth-this.realWidth)/2)+"px";
+        	""+this.leftMargin+"px";
         
 	}
 
