@@ -1,4 +1,4 @@
-import { Component, State } from '@stencil/core';
+import { Component, State, Listen } from '@stencil/core';
 import { WAnalysis } from '../../helpers/w-analysis';
 import { loadOpenCv, CV as cv } from '../../helpers/cv';
 
@@ -11,6 +11,11 @@ export class WSetup {
 
   private analysis:WAnalysis;
   @State() loading = true;
+
+  @Listen("switchCamera")
+  switchCameraHandler(_e: CustomEvent) {
+    this.analysis.startCamera();
+  }
 
   private dst1:any;
 
@@ -42,6 +47,9 @@ export class WSetup {
       return <div class="loading">Loading...</div>;
     }
 
-    return <slot/>
+    return <div>
+          <slot/>
+          <w-camerachooser />
+       </div>
   }
 }

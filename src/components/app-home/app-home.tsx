@@ -58,7 +58,6 @@ export class AppHome {
               Appear/Disappear
             </button>
           </stencil-route-link>
-
         </div>
       </w-setup>
     );

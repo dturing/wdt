@@ -61,7 +61,7 @@ export class WDelay {
         this.inputWidth = width;
         this.inputHeight = height;
         for (let i=0; i<this.frames; i++) {
-           this.tape[i] = new cv.Mat(this.inputWidth, this.inputHeight, cv.CV_8UC4);
+           this.tape[i] = new cv.Mat.zeros(this.inputWidth, this.inputHeight, cv.CV_8UC4);
         }
       },
       (src,_width,_height, t) => {

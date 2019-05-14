@@ -100,9 +100,17 @@ export class WAnalysis {
 	}
 
 	startCamera() {
-	    let videoConstraint = { width: { exact: this.width },
+	    let videoConstraint:any = { width: { exact: this.width },
 	                           height: { exact: this.height } };
+	                           
 
+	    let deviceId = window.localStorage.getItem("cameraDevice");
+  		if (deviceId) {
+  			videoConstraint.deviceId = {exact:deviceId};
+  		}
+  		console.log("Video constraint:", videoConstraint);
+
+	    if (this.src) this.stopCamera();
 	    if (this._init) this._init(this.width, this.height);
 
 	    navigator.mediaDevices.getUserMedia({video: videoConstraint, audio: false})
@@ -144,10 +152,15 @@ export class WAnalysis {
     			this.overlayContext = this.overlayCanvasElement.getContext("2d");
 
 		    	this.onWindowResized();
+		    	this.stop = false;
 
 	        })
-	        .catch(function(err) {
+	        .catch((err) => {
 	            console.log('Camera Error: ' + err.name + ' ' + err.message);
+	            if (err.name == "OverconstrainedError") {
+    	  			window.localStorage.removeItem("cameraDevice");
+    	  			this.startCamera();
+	            }
 	        });
 
 		this.src = new cv.Mat(this.height, this.width, cv.CV_8UC4);
@@ -163,6 +176,7 @@ export class WAnalysis {
         //if (tDiff >= 1000/30) {
 	        this.lastTime = t;
 
+	    if (this.vc) {
 			this.vc.read(this.src);
 
 			let dst = this.src;
@@ -180,21 +194,26 @@ export class WAnalysis {
 			}
 
 			if (this._draw) this._draw(this.overlayContext, this.realWidth, this.realHeight, tDiff);
-		//}
+		}
 
 		if (!this.stop)
 			requestAnimationFrame((t)=>{ this.process(t); });
 	}
 
-	unload() {
-		this.src.delete();
+	stopCamera() {
+		delete this.vc;
 		this.stop = true;
+		this.src.delete();
 		this.videoElement.pause();
 		if (this.stream) {
 			this.stream.getTracks().forEach(function(track) {
 	            track.stop();
 	        });
-	    }
+	    }	
+	}
+
+	unload() {
+		this.stopCamera();
 		this.videoElement.parentNode.removeChild(this.videoElement);
 		this.canvasElement.parentNode.removeChild(this.canvasElement);
 		this.overlayCanvasElement.parentNode.removeChild(this.overlayCanvasElement);
