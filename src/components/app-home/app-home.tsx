@@ -15,10 +15,6 @@ export class AppHome {
             Welcome to the 2019 version of <b>Whatever Dance Tool</b>.
           </p>
 
-          <p>
-            This is very much in development. Lots of things will not work as expected.
-          </p>
-
           <stencil-route-link url='/matching'>
             <button>
               <img src="/assets/img/matching.png" /><br/>

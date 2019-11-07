@@ -30,6 +30,8 @@ export class WCapture {
   private trackBox:any;
   private lastangle = -10000;
 
+  private sensitivity:number = 5;
+
   private audioElement!: HTMLAudioElement;
 
   private currentTask:Task = new Settle();
@@ -138,7 +140,7 @@ export class WCapture {
     this.background.convertTo(this.dst1, cv.CV_8U);
     cv.absdiff(src, this.dst1, this.dst2);
     cv.cvtColor(this.dst2, this.dst1, cv.COLOR_RGB2GRAY);
-    cv.threshold(this.dst1, this.dst2, 50, 150, cv.THRESH_BINARY);
+    cv.threshold(this.dst1, this.dst2, this.sensitivity * 10, 150, cv.THRESH_BINARY);
 
     
 // for triggers, use roi with: console.log("mean:", cv.mean(dst2));
@@ -176,6 +178,13 @@ export class WCapture {
 
   @Method() playSound() {
     this.audioElement.play();
+  }
+
+  setSensitivity(change:number) {
+    this.sensitivity += change;
+
+    if (this.sensitivity > 10) this.sensitivity = 10;
+    if (this.sensitivity < 1) this.sensitivity = 1;
   }
 
   switchTaskBy(by:number) {
@@ -236,6 +245,8 @@ export class WCapture {
         }
         <w-commandpalette commands={{
           ...this.taskCommands,
+          "ArrowUp":    { symbol:"↥", description:"Increase Sensitivity",  execute:()=>{ this.setSensitivity(+1); } },
+          "ArrowDown":  { symbol:"↧", description:"Decrease Sensitivity", execute:()=>{ this.setSensitivity(-1); } },
           "e": { symbol:"e", description:"Edit Tasks", execute:()=>{ this.editTasks(); } },
           "n": { symbol:"n", description:"Next Task", execute:()=>{ this.switchTaskBy(1); } },
           "p": { symbol:"p", description:"Previous Task", execute:()=>{ this.switchTaskBy(-1); } },
